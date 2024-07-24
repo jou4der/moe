@@ -1,6 +1,10 @@
 <!doctype html>
 <html>
 <head>
+    <!--
+    <meta name="viewport" content="width=device-width, initial-scale=2.0"">
+    </meta>
+    --><meta name="viewport" content="width=device-width, initial-scale=0.5">
     <title>Trampoline Park Timer</title>
     <style>
         body {
@@ -67,6 +71,16 @@
             cursor: pointer;
             border-radius: 5px;
         }
+        a {
+          background-color: #f44336;
+          color: white;
+          padding: 14px 24px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          border-radius: 5px;
+          margin: 40px 0 20px 0;
+        }
     </style>
 </head>
 <body>
@@ -99,6 +113,7 @@
             <input type="number" id="sessionDuration" value="5" min="1" max="60">
             <button onclick="updateSessionDuration()">Update Duration</button>
         </div>
+        <a href="index.html">Back</a>
     </div>
     <script>
         let trampolineStates = {1: 'available', 2: 'available', 3: 'available', 4: 'available'};
