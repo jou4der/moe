@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=0.5">
+    <title>Boats Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #333;
+            margin-top: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .boat {
+            width: 150px;
+            height: 50px;
+            font-size: 16px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        .available {
+            background-color: lightgray;
+        }
+        .in-use {
+            background-color: green;
+        }
+        .time-up {
+            background-color: red;
+        }
+        .boat-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .boat-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .controls input {
+            margin-bottom: 10px;
+            padding: 5px;
+            font-size: 16px;
+        }
+        .controls button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .back {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px;
+            color: red;
+        }
+        a {
+          background-color: #f44336;
+          color: white;
+          padding: 14px 24px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          border-radius: 5px;
+          margin: 40px 0 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Boats Timer</h1>
+    <div class="container">
+        <div class="boat-container">
+            <div class="boat-info">
+                <button class="boat available" id="boat1" onclick="startSession(1)">Boat 1</button>
+                <span id="timer1">00:00</span>
+                <button onclick="cancelSession(1)">Cancel</button>
+            </div>
+            <div class="boat-info">
+                <button class="boat available" id="boat2" onclick="startSession(2)">Boat 2</button>
+                <span id="timer2">00:00</span>
+                <button onclick="cancelSession(2)">Cancel</button>
+            </div>
+            <div class="boat-info">
+                <button class="boat available" id="boat3" onclick="startSession(3)">Boat 3</button>
+                <span id="timer3">00:00</span>
+                <button onclick="cancelSession(3)">Cancel</button>
+            </div>
+            <div class="boat-info">
+                <button class="boat available" id="boat4" onclick="startSession(4)">Boat 4</button>
+                <span id="timer4">00:00</span>
+                <button onclick="cancelSession(4)">Cancel</button>
+            </div>
+            <div class="boat-info">
+                <button class="boat available" id="boat5" onclick="startSession(5)">Boat 5</button>
+                <span id="timer5">00:00</span>
+                <button onclick="cancelSession(5)">Cancel</button>
+            </div>
+        </div>
+        <div class="controls">
+            <label for="sessionDuration">Session Duration (minutes):</label>
+            <input type="number" id="sessionDuration" value="5" min="1" max="60">
+            <button onclick="updateSessionDuration()">Update Duration</button>
+        </div>
+        <a href="index.html">Back</a>
+    </div>
+    <script>
+        let boatStates = {1: 'available', 2: 'available', 3: 'available', 4: 'available', 5: 'available'};
+        let timers = {};
+        let sessionDuration = 5 * 60; // Default duration in seconds
+
+        function startSession(boat) {
+            if (boatStates[boat] === 'available') {
+                boatStates[boat] = 'in-use';
+                let startTime = new Date();
+                let remainingTime = sessionDuration;
+                document.getElementById(`boat${boat}`).className = 'boat in-use';
+                startTimer(boat, remainingTime);
+                alert(`Boat ${boat} started at ${startTime.toLocaleTimeString()}`);
+            } else {
+                alert(`Boat ${boat} is already in use`);
+            }
+        }
+
+        function cancelSession(boat) {
+            if (boatStates[boat] === 'in-use' || boatStates[boat] === 'time-up') {
+                boatStates[boat] = 'available';
+                document.getElementById(`boat${boat}`).className = 'boat available';
+                document.getElementById(`timer${boat}`).innerText = '00:00';
+                clearInterval(timers[boat]);
+                alert(`Boat ${boat} session canceled`);
+            } else {
+                alert(`Boat ${boat} is not in use`);
+            }
+        }
+
+        function startTimer(boat, timeLeft) {
+            clearInterval(timers[boat]);
+            let timerElement = document.getElementById(`timer${boat}`);
+            timers[boat] = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timers[boat]);
+                    boatStates[boat] = 'time-up';
+                    document.getElementById(`boat${boat}`).className = 'boat time-up';
+                } else {
+                    let minutes = Math.floor(timeLeft / 60);
+                    let seconds = timeLeft % 60;
+                    timerElement.innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    timeLeft--;
+                }
+            }, 1000);
+        }
+
+        function updateSessionDuration() {
+            let newDuration = document.getElementById('sessionDuration').value;
+            sessionDuration = newDuration * 60; // Convert minutes to seconds
+            alert(`Session duration updated to ${newDuration} minutes.`);
+        }
+    </script>
+</body>
+</html>
